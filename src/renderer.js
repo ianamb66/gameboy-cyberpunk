@@ -135,9 +135,40 @@ export function createRenderer(canvas) {
           bctx.fillRect(x + 6, y + 5, 1, 1);
           bctx.globalAlpha = 1;
         } else {
-          // floor (checker)
+          // floor types
           const alt = ((tx + ty) & 1) === 0;
-          bctx.fillStyle = alt ? CONFIG.PALETTE.floorA : CONFIG.PALETTE.floorB;
+          let a = CONFIG.PALETTE.floorA;
+          let b = CONFIG.PALETTE.floorB;
+
+          // 3 wood, 4 tile, 5 carpet, 6 concrete
+          if (t === 3) {
+            a = '#3a1b73';
+            b = '#2a1456';
+            // plank hint
+            bctx.globalAlpha = 0.12;
+            bctx.fillStyle = '#000';
+            bctx.fillRect(x + (tx % 3 === 0 ? 0 : 5), y, 1, tile);
+            bctx.globalAlpha = 1;
+          } else if (t === 4) {
+            a = '#1a1133';
+            b = '#22124a';
+            bctx.globalAlpha = 0.18;
+            bctx.fillStyle = CONFIG.PALETTE.neonCyan;
+            if (((tx + ty) & 3) === 0) bctx.fillRect(x + tile - 1, y, 1, 1);
+            bctx.globalAlpha = 1;
+          } else if (t === 5) {
+            a = '#4a1b6f';
+            b = '#31104f';
+            bctx.globalAlpha = 0.12;
+            bctx.fillStyle = CONFIG.PALETTE.neonPink;
+            if (((tx * 7 + ty * 13) & 7) === 0) bctx.fillRect(x + 1, y + 1, 1, 1);
+            bctx.globalAlpha = 1;
+          } else if (t === 6) {
+            a = '#130a26';
+            b = '#0e061c';
+          }
+
+          bctx.fillStyle = alt ? a : b;
           bctx.fillRect(x, y, tile, tile);
 
           // subtle grime lines
@@ -204,5 +235,65 @@ export function createRenderer(canvas) {
     postFX();
   }
 
-  return { ctx, clear, drawMap, drawPlayer, drawDebugText, present };
+  function drawDecals(decals, camera) {
+    for (const d of decals) {
+      const x = d.x - camera.x;
+      const y = d.y - camera.y;
+      bctx.globalAlpha = d.alpha ?? 1;
+      bctx.fillStyle = d.color;
+
+      if (d.kind === 'blood') {
+        // splat
+        bctx.beginPath();
+        bctx.arc(x, y, d.size, 0, Math.PI * 2);
+        bctx.fill();
+        bctx.fillRect(x - d.size, y, d.size * 2, 1);
+        bctx.fillRect(x, y - d.size, 1, d.size * 2);
+      } else if (d.kind === 'puddle') {
+        bctx.globalAlpha = (d.alpha ?? 1) * 0.35;
+        bctx.beginPath();
+        bctx.ellipse(x, y, d.size * 1.4, d.size * 0.9, 0, 0, Math.PI * 2);
+        bctx.fill();
+      } else {
+        bctx.fillRect(x - 1, y - 1, 2, 2);
+      }
+
+      bctx.globalAlpha = 1;
+    }
+  }
+
+  function drawProps(propsSystem, camera) {
+    const tile = CONFIG.TILE;
+    for (const p of propsSystem.props) {
+      const x = p.tx * tile - camera.x;
+      const y = p.ty * tile - camera.y;
+      const w = p.w * tile;
+      const h = p.h * tile;
+
+      const color = CONFIG.PALETTE[p.color] || p.color || CONFIG.PALETTE.ink;
+      bctx.fillStyle = color;
+      bctx.globalAlpha = p.solid ? 0.9 : 0.65;
+      bctx.fillRect(x, y, w, h);
+      bctx.globalAlpha = 1;
+
+      if (p.outline) {
+        const oc = CONFIG.PALETTE[p.outline] || p.outline;
+        bctx.strokeStyle = oc;
+        bctx.globalAlpha = 0.55;
+        bctx.lineWidth = 1;
+        bctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+        bctx.globalAlpha = 1;
+      }
+
+      // tiny detail
+      if (!p.solid) {
+        bctx.fillStyle = '#000';
+        bctx.globalAlpha = 0.25;
+        bctx.fillRect(x + 1, y + 1, 1, 1);
+        bctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  return { ctx, clear, drawMap, drawDecals, drawProps, drawPlayer, drawDebugText, present };
 }

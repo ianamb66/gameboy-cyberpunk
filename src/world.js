@@ -1,7 +1,7 @@
 import { CONFIG } from './config.js';
 import { aabb } from './utils.js';
 
-export function createWorld(map) {
+export function createWorld(map, propsSystem) {
   const tile = map.tile;
 
   function tileAABB(tx, ty) {
@@ -36,12 +36,14 @@ export function createWorld(map) {
           entity.x += (dx / dist) * overlap;
           entity.y += (dy / dist) * overlap;
         } else if (dist2 < r2) {
-          // Rare exact overlap (center inside corner). Nudge out.
           entity.x += 0.1;
           entity.y += 0.1;
         }
       }
     }
+
+    // Props collisions
+    propsSystem?.resolveCircleVsSolidProps?.(entity);
   }
 
   function clampToWorld(entity) {
