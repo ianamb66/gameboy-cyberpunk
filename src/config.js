@@ -1,8 +1,9 @@
 export const CONFIG = {
   // Internal resolution (Hotline Miami-ish pixel look)
   // (low-res buffer scaled up, crisp)
-  WIDTH: 320,
-  HEIGHT: 180,
+  // Increased internal resolution (still pixel-crisp)
+  WIDTH: 480,
+  HEIGHT: 270,
   SCALE: 4,
 
   TILE: 10,
@@ -28,10 +29,10 @@ export const CONFIG = {
   // Palette (Hotline Miami vibe: neon + deep shadows)
   PALETTE: {
     // world
-    bg: '#0b0616',
+    bg: '#07020f',
     floorA: '#2a1456',
     floorB: '#3a1b73',
-    wall: '#140b2b',
+    wall: '#120826',
     wallEdge: '#ff2bd6',
 
     // accents
@@ -39,9 +40,22 @@ export const CONFIG = {
     neonCyan: '#15f4ee',
     neonYellow: '#ffe14a',
     neonGreen: '#39ff88',
+    blood: '#ff1744',
 
     // entities/UI
     player: '#e6f7ff',
     ink: '#dbe7ff',
+  },
+
+  POSTFX: {
+    scanlines: true,
+    noise: true,
+    chroma: true,
+    vignette: true,
+
+    scanlineAlpha: 0.08,
+    noiseAlpha: 0.08,
+    chromaOffset: 1, // px
+    vignetteAlpha: 0.55,
   },
 };

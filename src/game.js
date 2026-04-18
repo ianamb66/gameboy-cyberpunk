@@ -104,6 +104,7 @@ export function createGame({ canvas, ui }) {
 
     step(dt);
     render();
+    renderer.present();
 
     requestAnimationFrame(loop);
   }
