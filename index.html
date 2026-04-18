@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEON//POCKET — Cyberpunk (Game Boy Aesthetic)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="dot"></span>
+        <span class="name">NEON//POCKET</span>
+      </div>
+      <div class="hint">WASD/Arrows move • Shift run • M map • Esc pause</div>
+    </header>
+
+    <main class="device">
+      <div class="bezel">
+        <canvas id="screen" width="160" height="144" aria-label="Game canvas"></canvas>
+        <div class="overlay-ui">
+          <div id="hud" class="hud" aria-label="HUD">
+            <div class="hud-left">
+              <div class="meter">
+                <span class="label">HP</span>
+                <div class="bar"><div id="hpBar" class="fill"></div></div>
+              </div>
+              <div class="meter">
+                <span class="label">EN</span>
+                <div class="bar"><div id="enBar" class="fill"></div></div>
+              </div>
+            </div>
+            <div class="hud-right">
+              <div class="chip" id="districtChip">District: Core</div>
+              <div class="chip" id="coordsChip">(0,0)</div>
+            </div>
+          </div>
+
+          <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-card">
+              <h2 id="modalTitle">Paused</h2>
+              <p id="modalBody">Press Esc to resume.</p>
+              <div class="modal-actions">
+                <button id="btnResume">Resume</button>
+                <button id="btnReset">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="minimap" class="minimap hidden" aria-label="Minimap">
+            <canvas id="minimapCanvas" width="96" height="96"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <aside class="controls">
+        <div class="pad">
+          <div class="dpad">
+            <div class="dpad-up"></div>
+            <div class="dpad-left"></div>
+            <div class="dpad-center"></div>
+            <div class="dpad-right"></div>
+            <div class="dpad-down"></div>
+          </div>
+        </div>
+        <div class="buttons">
+          <div class="btn a">A</div>
+          <div class="btn b">B</div>
+          <div class="meta">
+            <div class="meta-btn">SELECT</div>
+            <div class="meta-btn">START</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <span>Phase 1: world + camera + collisions + retro scaling + minimal UI</span>
+    </footer>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

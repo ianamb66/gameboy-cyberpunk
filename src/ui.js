@@ -1,0 +1,84 @@
+import { clamp } from './utils.js';
+import { CONFIG } from './config.js';
+
+export function createUI(ui) {
+  let isPaused = false;
+  let showMap = false;
+
+  function setBars({ hp, maxHp, en, maxEn }) {
+    const hpPct = maxHp ? clamp(hp / maxHp, 0, 1) : 0;
+    const enPct = maxEn ? clamp(en / maxEn, 0, 1) : 0;
+    if (ui.hpBar) ui.hpBar.style.width = `${Math.round(hpPct * 100)}%`;
+    if (ui.enBar) ui.enBar.style.width = `${Math.round(enPct * 100)}%`;
+  }
+
+  function setChips({ district, x, y }) {
+    if (ui.districtChip) ui.districtChip.textContent = `District: ${district}`;
+    if (ui.coordsChip) ui.coordsChip.textContent = `(${Math.round(x)},${Math.round(y)})`;
+  }
+
+  function setPaused(p) {
+    isPaused = p;
+    if (!ui.modal) return;
+    ui.modal.classList.toggle('hidden', !isPaused);
+  }
+
+  function setMapVisible(v) {
+    showMap = v;
+    if (!ui.minimap) return;
+    ui.minimap.classList.toggle('hidden', !showMap);
+  }
+
+  function bindButtons(onResume, onReset) {
+    ui.btnResume?.addEventListener('click', onResume);
+    ui.btnReset?.addEventListener('click', onReset);
+  }
+
+  function drawMinimap(map, player) {
+    if (!ui.minimapCanvas) return;
+    const c = ui.minimapCanvas;
+    const ctx = c.getContext('2d');
+    if (!ctx) return;
+    ctx.imageSmoothingEnabled = false;
+
+    const tw = map.w;
+    const th = map.h;
+
+    // Fit entire map into minimap canvas.
+    const sx = c.width / tw;
+    const sy = c.height / th;
+
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    // background
+    ctx.fillStyle = CONFIG.PALETTE.gb0;
+    ctx.fillRect(0, 0, c.width, c.height);
+
+    for (let y = 0; y < th; y++) {
+      for (let x = 0; x < tw; x++) {
+        const t = map.getTile(x, y);
+        if (t === 1) ctx.fillStyle = CONFIG.PALETTE.gb1;
+        else if (t === 2) ctx.fillStyle = CONFIG.PALETTE.accent;
+        else ctx.fillStyle = CONFIG.PALETTE.gb0;
+        ctx.globalAlpha = (t === 2) ? 0.35 : 1;
+        ctx.fillRect(x * sx, y * sy, Math.ceil(sx), Math.ceil(sy));
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // player marker
+    const px = (player.x / map.tile) * sx;
+    const py = (player.y / map.tile) * sy;
+    ctx.fillStyle = CONFIG.PALETTE.gb3;
+    ctx.fillRect(px - 1, py - 1, 3, 3);
+  }
+
+  return {
+    setBars,
+    setChips,
+    setPaused,
+    setMapVisible,
+    bindButtons,
+    drawMinimap,
+  };
+}
