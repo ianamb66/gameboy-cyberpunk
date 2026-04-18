@@ -220,6 +220,8 @@ export function createGame({ canvas, ui }) {
   function loop(t) {
     if (!state.running) return;
 
+    window.__NP_TICK = (window.__NP_TICK || 0) + 1;
+
     if (!state.last) state.last = t;
     const dt = Math.min(0.05, (t - state.last) / 1000);
     state.last = t;
@@ -239,6 +241,7 @@ export function createGame({ canvas, ui }) {
     if (state.running) return;
     state.running = true;
     state.last = 0;
+    window.__NP_RUNNING = true;
 
     // Ensure correct canvas size
     canvas.width = CONFIG.WIDTH;
