@@ -4,6 +4,7 @@ import { CONFIG } from './config.js';
 export function createUI(ui) {
   let isPaused = false;
   let showMap = false;
+  let showSettings = false;
 
   function setBars({ hp, maxHp, en, maxEn }) {
     const hpPct = maxHp ? clamp(hp / maxHp, 0, 1) : 0;
@@ -29,9 +30,16 @@ export function createUI(ui) {
     ui.minimap.classList.toggle('hidden', !showMap);
   }
 
-  function bindButtons(onResume, onReset) {
+  function setSettingsVisible(v) {
+    showSettings = v;
+    if (!ui.settingsModal) return;
+    ui.settingsModal.classList.toggle('hidden', !showSettings);
+  }
+
+  function bindButtons(onResume, onReset, onCloseSettings) {
     ui.btnResume?.addEventListener('click', onResume);
     ui.btnReset?.addEventListener('click', onReset);
+    ui.btnCloseSettings?.addEventListener('click', onCloseSettings);
   }
 
   function drawMinimap(map, player) {
@@ -73,11 +81,34 @@ export function createUI(ui) {
     ctx.fillRect(px - 1, py - 1, 3, 3);
   }
 
+  function setOnscreenVisible(v) {
+    if (!ui.onscreen) return;
+    ui.onscreen.classList.toggle('hidden', !v);
+  }
+
+  function setSettingsToggles({ onscreenControls, postFX }) {
+    if (ui.toggleOnscreen) ui.toggleOnscreen.checked = !!onscreenControls;
+    if (ui.togglePostfx) ui.togglePostfx.checked = !!postFX;
+  }
+
+  function onToggleOnscreen(cb) {
+    ui.toggleOnscreen?.addEventListener('change', () => cb(!!ui.toggleOnscreen.checked));
+  }
+
+  function onTogglePostfx(cb) {
+    ui.togglePostfx?.addEventListener('change', () => cb(!!ui.togglePostfx.checked));
+  }
+
   return {
     setBars,
     setChips,
     setPaused,
     setMapVisible,
+    setSettingsVisible,
+    setOnscreenVisible,
+    setSettingsToggles,
+    onToggleOnscreen,
+    onTogglePostfx,
     bindButtons,
     drawMinimap,
   };

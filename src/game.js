@@ -11,6 +11,7 @@ import { createPropsSystem } from './props.js';
 import { createDecals } from './decals.js';
 import { mulberry32, randInt, randPick, chance } from './rng.js';
 import { CLUSTERS } from './propsData.js';
+import { loadSettings, saveSettings } from './settings.js';
 
 export function createGame({ canvas, ui }) {
   const renderer = createRenderer(canvas);
@@ -25,6 +26,8 @@ export function createGame({ canvas, ui }) {
   const world = createWorld(map, propsSystem);
   const player = createPlayer({ x: 32, y: 32 });
   const hud = createUI(ui);
+
+  const settings = loadSettings();
 
   const state = {
     running: false,
@@ -130,15 +133,40 @@ export function createGame({ canvas, ui }) {
     regenerate(seed);
   }
 
-  hud.bindButtons(() => setPaused(false), () => reset());
+  function closeSettings() {
+    hud.setSettingsVisible(false);
+    // Keep paused state unchanged.
+  }
+
+  hud.bindButtons(() => setPaused(false), () => reset(), () => closeSettings());
+
+  // Settings wiring
+  hud.setSettingsToggles({ onscreenControls: settings.onscreenControls, postFX: settings.postFX });
+  hud.setOnscreenVisible(!!settings.onscreenControls);
+  hud.onToggleOnscreen((v) => {
+    settings.onscreenControls = v;
+    hud.setOnscreenVisible(v);
+    saveSettings(settings);
+  });
+  hud.onTogglePostfx((v) => {
+    settings.postFX = v;
+    saveSettings(settings);
+  });
 
   function handleHotkeys() {
-    if (input.wasPressed('escape')) setPaused(!state.paused);
-    if (input.wasPressed('m')) toggleMap();
+    // Start = pause
+    if (input.btnPressed.start) setPaused(!state.paused);
+    // Select = settings
+    if (input.btnPressed.select) hud.setSettingsVisible(true);
+
+    if (input.wasPressed('m') && !input.isDown('shift')) toggleMap();
+
+    // Shift+M open settings too
+    if (input.wasPressed('m') && input.isDown('shift')) hud.setSettingsVisible(true);
 
     // N: new seed (new level)
     if (input.wasPressed('n') && !input.state.run) regenerate(((Date.now() & 0xfffffff) >>> 0));
-    // Shift+N (we reuse run flag): redecorate same layout
+    // Shift+N redecorate same layout
     if (input.wasPressed('n') && input.state.run) decorate(seed ^ ((Date.now() & 0xffff) >>> 0));
   }
 
@@ -197,7 +225,7 @@ export function createGame({ canvas, ui }) {
 
     step(dt);
     render();
-    renderer.present();
+    renderer.present({ postfxEnabled: settings.postFX });
 
     requestAnimationFrame(loop);
   }
@@ -225,5 +253,5 @@ export function createGame({ canvas, ui }) {
     input.destroy();
   }
 
-  return { start, stop, state };
+  return { start, stop, state, input };
 }

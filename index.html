@@ -40,10 +40,30 @@
           <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
             <div class="modal-card">
               <h2 id="modalTitle">Paused</h2>
-              <p id="modalBody">Press Esc to resume.</p>
+              <p id="modalBody">Press Esc / Start to resume.</p>
               <div class="modal-actions">
                 <button id="btnResume">Resume</button>
                 <button id="btnReset">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-card">
+              <h2>Settings</h2>
+              <p class="muted">Select (gamepad) / Shift+M (keyboard) opens this.</p>
+              <div class="settings">
+                <label class="setting-row">
+                  <input id="toggleOnscreen" type="checkbox" />
+                  <span>On-screen controls (touch)</span>
+                </label>
+                <label class="setting-row">
+                  <input id="togglePostfx" type="checkbox" />
+                  <span>VHS/CRT Post FX</span>
+                </label>
+              </div>
+              <div class="modal-actions">
+                <button id="btnCloseSettings">Close</button>
               </div>
             </div>
           </div>
@@ -76,8 +96,25 @@
     </main>
 
     <footer class="footer">
-      <span>Phase 1: world + camera + collisions + pixel scaling + Hotline-Miami vibe</span>
+      <span>Rooms + props + decals • Start/Select menus • Gamepad + touch controls</span>
     </footer>
+  </div>
+
+  <!-- On-screen controls (toggle in Settings) -->
+  <div id="onscreen" class="onscreen hidden" aria-label="On-screen controls">
+    <div id="touchpad" class="touchpad">
+      <div id="touchstick" class="touchstick"></div>
+    </div>
+
+    <div class="metaRow">
+      <div id="touchSelect" class="metaBtn">SELECT</div>
+      <div id="touchStart" class="metaBtn">START</div>
+    </div>
+
+    <div class="touchbtns">
+      <div id="touchB" class="touchbtn b">B</div>
+      <div id="touchA" class="touchbtn a">A</div>
+    </div>
   </div>
 
   <script type="module" src="main.js"></script>

@@ -39,9 +39,11 @@ export function createRenderer(canvas) {
     bctx.fillRect(0, 0, CONFIG.WIDTH, CONFIG.HEIGHT);
   }
 
-  function postFX() {
+  function postFX(fxEnabled = true) {
     // Base
     ctx.drawImage(buffer, 0, 0);
+
+    if (!fxEnabled) return;
 
     const fx = CONFIG.POSTFX;
 
@@ -50,9 +52,7 @@ export function createRenderer(canvas) {
       const o = fx.chromaOffset ?? 1;
       ctx.globalCompositeOperation = 'screen';
       ctx.globalAlpha = 0.10;
-      // Red-ish
       ctx.drawImage(buffer, -o, 0);
-      // Cyan-ish
       ctx.drawImage(buffer, o, 0);
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
@@ -62,22 +62,17 @@ export function createRenderer(canvas) {
     if (fx?.scanlines) {
       ctx.globalAlpha = fx.scanlineAlpha ?? 0.08;
       ctx.fillStyle = '#000';
-      for (let y = 0; y < CONFIG.HEIGHT; y += 2) {
-        ctx.fillRect(0, y, CONFIG.WIDTH, 1);
-      }
+      for (let y = 0; y < CONFIG.HEIGHT; y += 2) ctx.fillRect(0, y, CONFIG.WIDTH, 1);
       ctx.globalAlpha = 1;
     }
 
     // Noise / VHS grain
     if (fx?.noise) {
-      // Refresh every frame (fast enough for 480x270)
       reseedNoise();
       ctx.globalAlpha = fx.noiseAlpha ?? 0.08;
       ctx.globalCompositeOperation = 'overlay';
       for (let y = 0; y < CONFIG.HEIGHT; y += noiseTile.height) {
-        for (let x = 0; x < CONFIG.WIDTH; x += noiseTile.width) {
-          ctx.drawImage(noiseTile, x, y);
-        }
+        for (let x = 0; x < CONFIG.WIDTH; x += noiseTile.width) ctx.drawImage(noiseTile, x, y);
       }
       ctx.globalCompositeOperation = 'source-over';
       ctx.globalAlpha = 1;
@@ -231,8 +226,8 @@ export function createRenderer(canvas) {
     bctx.globalAlpha = 1;
   }
 
-  function present() {
-    postFX();
+  function present({ postfxEnabled } = { postfxEnabled: true }) {
+    postFX(postfxEnabled !== false);
   }
 
   function drawDecals(decals, camera) {
