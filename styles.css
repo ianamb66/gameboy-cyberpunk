@@ -42,6 +42,9 @@ body{
   .controls{display:none}
 }
 
+/* When on-screen controls are enabled, hide the decorative desktop controls to avoid duplicates */
+body.onscreen-on .controls{display:none !important;}
+
 .bezel{
   position:relative;
   background: linear-gradient(135deg, var(--shell), var(--shell2));

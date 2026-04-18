@@ -84,6 +84,7 @@ export function createUI(ui) {
   function setOnscreenVisible(v) {
     if (!ui.onscreen) return;
     ui.onscreen.classList.toggle('hidden', !v);
+    document.body.classList.toggle('onscreen-on', !!v);
   }
 
   function setSettingsToggles({ onscreenControls, postFX }) {

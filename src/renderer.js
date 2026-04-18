@@ -41,6 +41,7 @@ export function createRenderer(canvas) {
 
   function postFX(fxEnabled = true) {
     // Base
+    ctx.clearRect(0, 0, CONFIG.WIDTH, CONFIG.HEIGHT);
     ctx.drawImage(buffer, 0, 0);
 
     if (!fxEnabled) return;
@@ -227,6 +228,19 @@ export function createRenderer(canvas) {
   }
 
   function present({ postfxEnabled } = { postfxEnabled: true }) {
+    // Canvas state can reset when canvas width/height changes; keep it stable.
+    ctx.imageSmoothingEnabled = false;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Ensure buffer matches config (in case of hot reload / future resizing)
+    if (buffer.width !== CONFIG.WIDTH || buffer.height !== CONFIG.HEIGHT) {
+      buffer.width = CONFIG.WIDTH;
+      buffer.height = CONFIG.HEIGHT;
+      bctx.imageSmoothingEnabled = false;
+    }
+
     postFX(postfxEnabled !== false);
   }
 
