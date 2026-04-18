@@ -1,10 +1,11 @@
 export const CONFIG = {
-  // Internal resolution (Game Boy classic)
-  WIDTH: 160,
-  HEIGHT: 144,
+  // Internal resolution (Hotline Miami-ish pixel look)
+  // (low-res buffer scaled up, crisp)
+  WIDTH: 320,
+  HEIGHT: 180,
   SCALE: 4,
 
-  TILE: 8,
+  TILE: 10,
 
   // World
   WORLD_W: 160, // tiles
@@ -24,13 +25,23 @@ export const CONFIG = {
     DEADZONE: 10,
   },
 
-  // Palette (Game Boy-ish + neon accent)
+  // Palette (Hotline Miami vibe: neon + deep shadows)
   PALETTE: {
-    gb0: '#0b1f10',
-    gb1: '#1f3a1f',
-    gb2: '#5d8a3c',
-    gb3: '#cbe38a',
-    ui:  '#d7f3d7',
-    accent: '#eab308',
+    // world
+    bg: '#0b0616',
+    floorA: '#2a1456',
+    floorB: '#3a1b73',
+    wall: '#140b2b',
+    wallEdge: '#ff2bd6',
+
+    // accents
+    neonPink: '#ff2bd6',
+    neonCyan: '#15f4ee',
+    neonYellow: '#ffe14a',
+    neonGreen: '#39ff88',
+
+    // entities/UI
+    player: '#e6f7ff',
+    ink: '#dbe7ff',
   },
 };

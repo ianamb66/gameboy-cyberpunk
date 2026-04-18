@@ -9,6 +9,7 @@ export function createMap() {
   const tile = CONFIG.TILE;
 
   // Simple generated districts inside one big map.
+  // Scale up a bit for the wider internal resolution.
   const w = CONFIG.WORLD_W;
   const h = CONFIG.WORLD_H;
 
