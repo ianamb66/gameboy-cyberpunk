@@ -257,7 +257,7 @@ export function createRenderer(canvas) {
     }
   }
 
-  function drawProps(propsSystem, camera) {
+  function drawProps(propsSystem, camera, atlas = null) {
     const tile = CONFIG.TILE;
     for (const p of propsSystem.props) {
       const x = p.tx * tile - camera.x;
@@ -265,27 +265,42 @@ export function createRenderer(canvas) {
       const w = p.w * tile;
       const h = p.h * tile;
 
-      const color = CONFIG.PALETTE[p.color] || p.color || CONFIG.PALETTE.ink;
-      bctx.fillStyle = color;
-      bctx.globalAlpha = p.solid ? 0.9 : 0.65;
-      bctx.fillRect(x, y, w, h);
-      bctx.globalAlpha = 1;
-
-      if (p.outline) {
-        const oc = CONFIG.PALETTE[p.outline] || p.outline;
-        bctx.strokeStyle = oc;
-        bctx.globalAlpha = 0.55;
-        bctx.lineWidth = 1;
-        bctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
-        bctx.globalAlpha = 1;
+      // Try sprite first
+      const spriteName = p.meta?.sprite;
+      let drew = false;
+      if (atlas && spriteName) {
+        drew = atlas.draw(bctx, spriteName, x, y, w, h);
+        if (drew) {
+          // subtle outline glow
+          bctx.globalAlpha = 0.35;
+          bctx.strokeStyle = CONFIG.PALETTE.neonPink;
+          bctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+          bctx.globalAlpha = 1;
+        }
       }
 
-      // tiny detail
-      if (!p.solid) {
-        bctx.fillStyle = '#000';
-        bctx.globalAlpha = 0.25;
-        bctx.fillRect(x + 1, y + 1, 1, 1);
+      if (!drew) {
+        const color = CONFIG.PALETTE[p.color] || p.color || CONFIG.PALETTE.ink;
+        bctx.fillStyle = color;
+        bctx.globalAlpha = p.solid ? 0.9 : 0.65;
+        bctx.fillRect(x, y, w, h);
         bctx.globalAlpha = 1;
+
+        if (p.outline) {
+          const oc = CONFIG.PALETTE[p.outline] || p.outline;
+          bctx.strokeStyle = oc;
+          bctx.globalAlpha = 0.55;
+          bctx.lineWidth = 1;
+          bctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+          bctx.globalAlpha = 1;
+        }
+
+        if (!p.solid) {
+          bctx.fillStyle = '#000';
+          bctx.globalAlpha = 0.25;
+          bctx.fillRect(x + 1, y + 1, 1, 1);
+          bctx.globalAlpha = 1;
+        }
       }
     }
   }

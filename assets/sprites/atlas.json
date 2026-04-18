@@ -1,0 +1,36 @@
+{
+  "image": "assets/sprites/atlas.jpg",
+  "size": {"w": 1364, "h": 768},
+  "grid": {
+    "cols": 5,
+    "rows": 4,
+    "margin": {"x": 20, "y": 78},
+    "gutter": {"x": 14, "y": 14},
+    "cell": {"w": 254, "h": 159}
+  },
+  "sprites": {
+    "green_coupe": {"col": 0, "row": 0},
+    "purple_sedan": {"col": 1, "row": 0},
+    "wall_graffiti": {"col": 2, "row": 0},
+    "garbage_dump": {"col": 3, "row": 0},
+    "environs_sunset": {"col": 4, "row": 0},
+
+    "protagonist_mask": {"col": 0, "row": 1},
+    "boss_mohawk": {"col": 1, "row": 1},
+    "fallen_enemy_1": {"col": 2, "row": 1},
+    "fallen_enemy_2": {"col": 3, "row": 1},
+    "pixel_cat": {"col": 4, "row": 1},
+
+    "bar_interior": {"col": 0, "row": 2},
+    "ram_skull_rug": {"col": 1, "row": 2},
+    "dj_booth": {"col": 2, "row": 2},
+    "live_stage": {"col": 3, "row": 2},
+    "bar_supplies": {"col": 4, "row": 2},
+
+    "katana": {"col": 0, "row": 3},
+    "pistol": {"col": 1, "row": 3},
+    "shotgun": {"col": 2, "row": 3},
+    "data_chip": {"col": 3, "row": 3},
+    "scattered_objects": {"col": 4, "row": 3}
+  }
+}

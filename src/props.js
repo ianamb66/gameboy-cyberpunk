@@ -23,7 +23,7 @@ export function createPropsSystem() {
       solid: !!def.solid,
       color: def.color,
       outline: def.outline,
-      meta,
+      meta: { ...meta, sprite: meta.sprite ?? def.sprite ?? null },
     };
     props.push(p);
     return p;

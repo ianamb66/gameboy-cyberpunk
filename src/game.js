@@ -12,6 +12,7 @@ import { createDecals } from './decals.js';
 import { mulberry32, randInt, randPick, chance } from './rng.js';
 import { CLUSTERS } from './propsData.js';
 import { loadSettings, saveSettings } from './settings.js';
+import { loadAtlas } from './atlas.js';
 
 export function createGame({ canvas, ui }) {
   const renderer = createRenderer(canvas);
@@ -28,6 +29,10 @@ export function createGame({ canvas, ui }) {
   const hud = createUI(ui);
 
   const settings = loadSettings();
+
+  let atlas = null;
+  // Fire and forget; game runs even if atlas fails to load.
+  loadAtlas('/assets/sprites/atlas.json').then(a => { atlas = a; }).catch(() => { atlas = null; });
 
   const state = {
     running: false,
@@ -201,7 +206,7 @@ export function createGame({ canvas, ui }) {
     renderer.clear();
     renderer.drawMap(map, camera.cam);
     renderer.drawDecals(decals.decals, camera.cam);
-    renderer.drawProps(propsSystem, camera.cam);
+    renderer.drawProps(propsSystem, camera.cam, atlas);
     renderer.drawPlayer(player.p, camera.cam);
 
     renderer.drawDebugText([
