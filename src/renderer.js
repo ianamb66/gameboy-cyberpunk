@@ -40,8 +40,11 @@ export function createRenderer(canvas) {
   }
 
   function postFX(fxEnabled = true) {
-    // Base
-    ctx.clearRect(0, 0, CONFIG.WIDTH, CONFIG.HEIGHT);
+    // Base (avoid clearRect transparency issues)
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = CONFIG.PALETTE.bg;
+    ctx.fillRect(0, 0, CONFIG.WIDTH, CONFIG.HEIGHT);
     ctx.drawImage(buffer, 0, 0);
 
     if (!fxEnabled) return;
