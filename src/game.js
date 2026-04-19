@@ -220,21 +220,27 @@ export function createGame({ canvas, ui }) {
   function loop(t) {
     if (!state.running) return;
 
-    window.__NP_TICK = (window.__NP_TICK || 0) + 1;
+    try {
+      window.__NP_TICK = (window.__NP_TICK || 0) + 1;
 
-    if (!state.last) state.last = t;
-    const dt = Math.min(0.05, (t - state.last) / 1000);
-    state.last = t;
+      if (!state.last) state.last = t;
+      const dt = Math.min(0.05, (t - state.last) / 1000);
+      state.last = t;
 
-    // fps smoothing
-    state.fps = dt > 0 ? 1 / dt : 0;
-    state.fpsSm = state.fpsSm * 0.92 + state.fps * 0.08;
+      // fps smoothing
+      state.fps = dt > 0 ? 1 / dt : 0;
+      state.fpsSm = state.fpsSm * 0.92 + state.fps * 0.08;
 
-    step(dt);
-    render();
-    renderer.present({ postfxEnabled: settings.postFX });
+      step(dt);
+      render();
+      renderer.present({ postfxEnabled: settings.postFX });
 
-    requestAnimationFrame(loop);
+      requestAnimationFrame(loop);
+    } catch (e) {
+      state.running = false;
+      window.__NP_ERR = String(e?.stack || e);
+      console.error(e);
+    }
   }
 
   function start() {
