@@ -160,9 +160,9 @@ export function createGame({ canvas, ui }) {
 
   function handleHotkeys() {
     // Start = pause
-    if (input.btnPressed.start) setPaused(!state.paused);
+    if (input.state.btnPressed.start) setPaused(!state.paused);
     // Select = settings
-    if (input.btnPressed.select) hud.setSettingsVisible(true);
+    if (input.state.btnPressed.select) hud.setSettingsVisible(true);
 
     if (input.wasPressed('m') && !input.isDown('shift')) toggleMap();
 
